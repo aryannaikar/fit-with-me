@@ -1,8 +1,3 @@
-const CLIENT_ID = '862421413145-j1g53d2d89o75c2ng9o9u9joipm4ls0v.apps.googleusercontent.com'; // Replace with your actual Google Client ID
-const CLIENT_SECRET = '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'; // Replace with your actual Client Secret
-const REDIRECT_URI = 'http://localhost:5500/managing.html'; // Adjust as needed
-
-
 let totalCalories = 0;
 let totalProtein = 0;
 let totalCarbs = 0;
@@ -199,90 +194,34 @@ document.getElementById("reset-diet-plan").addEventListener("click", () => {
 });
 
 
-// Function to initiate Google Sign-in
-function onGoogleSignIn() {
-    const authUrl = `https://accounts.google.com/o/oauth2/auth?` +
-        `client_id=${CLIENT_ID}` +
-        `&redirect_uri=${encodeURIComponent(REDIRECT_URI)}` +
-        `&response_type=code` +
-        `&scope=https://www.googleapis.com/auth/fitness.activity.read` +
-        `&access_type=offline`;
+// function fetchStepsFromPhone() {
+//     fetch('/api/get_steps')
+//         .then(response => response.json())
+//         .then(data => {
+//             const steps = data.steps || 0;
+//             document.getElementById('steps').value = steps;
+//             const caloriesBurned = steps * 0.04;
+//             document.getElementById('calories-burned').textContent = caloriesBurned.toFixed(2);
+//         })
+//         .catch(() => alert('❌ Failed to fetch steps.'));
+// }
 
-    window.location.href = authUrl; // Redirect user to Google login
-}
+//const CLIENT_ID = "862421413145-j1g53d2d89o75c2ng9o9u9joipm4ls0v.apps.googleusercontent.com";
 
-// Function to exchange authorization code for an access token
-async function getAccessToken(code) {
-    const response = await fetch('https://oauth2.googleapis.com/token', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams({
-            client_id: CLIENT_ID,
-            client_secret: CLIENT_SECRET,
-            code: code,
-            grant_type: 'authorization_code',
-            redirect_uri: REDIRECT_URI
-        })
-    });
-    const data = await response.json();
-    localStorage.setItem('access_token', data.access_token);
-    fetchStepsFromGoogleFit();
-}
+ //Local testing
+// const REDIRECT_URI = "http://localhost:8000/auth/callback";  
 
-// Function to extract authorization code from URL
-async function handleAuthCallback() {
-    const params = new URLSearchParams(window.location.search);
-    if (params.has('code')) {
-        const code = params.get('code');
-        const response = await fetch('http://localhost:3000/auth/token', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ code })
-        });
+// // For deployment (Vercel)
+// const REDIRECT_URI = "https://fit-with-me.vercel.app/auth/callback";
 
-        const data = await response.json();
-        localStorage.setItem('access_token', data.access_token);
-        fetchStepsFromGoogleFit();
-    }
-}
+// function onGoogleSignIn() {
+//      const authUrl = `https://accounts.google.com/o/oauth2/auth?` +
+//      `client_id=${CLIENT_ID}` +
+//      `&redirect_uri=${encodeURIComponent(REDIRECT_URI)}` +  
+//      `&response_type=token` +
+//      `&scope=https://www.googleapis.com/auth/fitness.activity.read`;
+
+//      window.location.href = authUrl; // Redirect user to Google login
+// }
 
 
-// Function to fetch step count from Google Fit
-async function fetchStepsFromGoogleFit() {
-    const accessToken = localStorage.getItem('access_token');
-    if (!accessToken) return;
-
-    const response = await fetch('https://www.googleapis.com/fitness/v1/users/me/dataset:aggregate', {
-        method: 'POST',
-        headers: {
-            'Authorization': `Bearer ${accessToken}`,
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            "aggregateBy": [{ "dataTypeName": "com.google.step_count.delta" }],
-            "bucketByTime": { "durationMillis": 86400000 },
-            "startTimeMillis": Date.now() - 86400000,
-            "endTimeMillis": Date.now()
-        })
-    });
-
-    const data = await response.json();
-    const steps = data.bucket?.[0]?.dataset?.[0]?.point?.[0]?.value?.[0]?.intVal || 0;
-    const caloriesBurned = steps * 0.04; // Approximate calories per step
-    document.getElementById('steps').value = steps;
-    document.getElementById('calories-burned').textContent = caloriesBurned.toFixed(2);
-    saveStepData(steps, caloriesBurned);
-}
-
-// Function to save step data in localStorage
-function saveStepData(steps, caloriesBurned) {
-    localStorage.setItem('steps', steps);
-    localStorage.setItem('caloriesBurned', caloriesBurned);
-}
-
-// Load stored data when the page loads
-document.addEventListener("DOMContentLoaded", () => {
-    document.getElementById('steps').value = localStorage.getItem('steps') || 0;
-    document.getElementById('calories-burned').textContent = localStorage.getItem('caloriesBurned') || 0;
-    handleAuthCallback();
-});
