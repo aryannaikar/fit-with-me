@@ -168,7 +168,6 @@ button:hover {
 
 /* Random floating movement */
 
-@k
 
 
 
@@ -179,7 +178,8 @@ button:hover {
 
 
 
-yframes floatRandom {
+
+@keyframes floatRandom {
     0% {
         transform: translate(0, 0) rotate(0deg);
         opacity: 0.8;

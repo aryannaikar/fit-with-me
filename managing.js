@@ -194,34 +194,3 @@ document.getElementById("reset-diet-plan").addEventListener("click", () => {
 });
 
 
-// function fetchStepsFromPhone() {
-//     fetch('/api/get_steps')
-//         .then(response => response.json())
-//         .then(data => {
-//             const steps = data.steps || 0;
-//             document.getElementById('steps').value = steps;
-//             const caloriesBurned = steps * 0.04;
-//             document.getElementById('calories-burned').textContent = caloriesBurned.toFixed(2);
-//         })
-//         .catch(() => alert('❌ Failed to fetch steps.'));
-// }
-
-//const CLIENT_ID = "862421413145-j1g53d2d89o75c2ng9o9u9joipm4ls0v.apps.googleusercontent.com";
-
- //Local testing
-// const REDIRECT_URI = "http://localhost:8000/auth/callback";  
-
-// // For deployment (Vercel)
-// const REDIRECT_URI = "https://fit-with-me.vercel.app/auth/callback";
-
-// function onGoogleSignIn() {
-//      const authUrl = `https://accounts.google.com/o/oauth2/auth?` +
-//      `client_id=${CLIENT_ID}` +
-//      `&redirect_uri=${encodeURIComponent(REDIRECT_URI)}` +  
-//      `&response_type=token` +
-//      `&scope=https://www.googleapis.com/auth/fitness.activity.read`;
-
-//      window.location.href = authUrl; // Redirect user to Google login
-// }
-
-
