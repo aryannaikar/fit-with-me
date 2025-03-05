@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Male Diet Plan and BMI Calculator</title>
+    <link rel="stylesheet" href="planner.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Male Diet Plan and BMI Calculator</h1>
+
+        <!-- Form for Male BMI and Diet Plan -->
+        <form id="dietFormMale">
+            <label for="heightMale">Height (in inches):</label>
+            <input type="number" id="heightMale" name="heightMale" placeholder="Enter height in inches" required>
+
+            <label for="weightMale">Weight (in pounds):</label>
+            <input type="number" id="weightMale" name="weightMale" placeholder="Enter weight in pounds" required>
+
+            <label for="ageMale">Age:</label>
+            <input type="number" id="ageMale" name="ageMale" placeholder="Enter age" required>
+
+            <!-- Vegetarian Diet Type Option (Separate Button) -->
+            <fieldset>
+                <legend>Diet Type</legend>
+                <div>
+                    <input type="checkbox" id="vegetarian" name="diet-type" value="vegetarian">
+                    <label for="vegetarian"><img src="pics/vegetarian.jpg" alt="">Vegetarian Only</label>
+                </div>
+            </fieldset>
+
+            <!-- Fitness Goals Section -->
+            <fieldset>
+                <legend>Fitness Goal</legend>
+                <div class="radio-group" id="goalMale">
+                    <input type="radio" id="maintain" name="goal" value="maintain">
+                    <label for="maintain"><img src="pics/Maintain.jpg" alt="">Maintain</label>
+                    
+                    <input type="radio" id="weight loss" name="goal" value="weight loss">
+                    <label for="weight loss"><img src="pics/looseMale.jpg" alt="">Weight Loss</label>
+                    
+                    <input type="radio" id="muscle gain" name="goal" value="muscle gain">
+                    <label for="muscle gain"><img src="pics/msucleMale.jpg" alt="">Muscle Gain</label>
+                </div>
+            </fieldset>
+            
+            <!-- Body Type Section -->
+            <fieldset>
+                <legend>Body Type</legend>
+                <div class="radio-group" id="bodyTypeMale">
+                    <input type="radio" id="ectomorph" name="body-type" value="ectomorph">
+                    <label for="ectomorph"><img src="pics/ectomorphMale.jpg" alt="">Ectomorph</label>
+                    
+                    <input type="radio" id="endomorph" name="body-type" value="endomorph">
+                    <label for="endomorph"><img src="pics/edomorphMale.jpg" alt="">Endomorph</label>
+                    
+                    <input type="radio" id="mesomorph" name="body-type" value="mesomorph">
+                    <label for="mesomorph"><img src="pics/mesomorphMale.jpg" alt="">Mesomorph</label>
+                </div>
+            </fieldset>
+
+            <button type="submit">Calculate</button>
+        </form>
+
+        <!-- Results Section -->
+        <div id="resultsMale" class="results"></div>
+    </div>
+
+    <!-- Script linking the JavaScript code provided -->
+    <script src="plannerM.js"></script>
+</body>
+</html>

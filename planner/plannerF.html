@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Female Diet Plan and BMI Calculator</title>
+    <link rel="stylesheet" href="planner.css">
+</head>
+<body>
+
+
+
+
+    <div class="container">
+        <h1>Female Diet Plan and BMI Calculator</h1>
+
+        <!-- Form for Female BMI and Diet Plan -->
+        <form id="dietFormFemale">
+            <label for="heightFemale">Height (in inches):</label>
+            <input type="number" id="heightFemale" name="heightFemale" placeholder="Enter height in inches" required>
+
+            <label for="weightFemale">Weight (in pounds):</label>
+            <input type="number" id="weightFemale" name="weightFemale" placeholder="Enter weight in pounds" required>
+
+            <label for="ageFemale">Age:</label>
+            <input type="number" id="ageFemale" name="ageFemale" placeholder="Enter age" required>
+
+            <!-- Vegetarian Diet Type Option (Separate Button) -->
+            <fieldset>
+                <legend>Diet Type</legend>
+                <div>
+                    <input type="checkbox" id="vegetarian" name="diet-type" value="vegetarian">
+                    <label for="vegetarian"><img src="pics/vegetarian.jpg" alt="">Vegetarian Only</label>
+                </div>
+            </fieldset>
+
+            <label for="goalFemale">Fitness Goal:</label>
+            <div class="radio-group" id="goalFemale">
+                <input type="radio" id="maintainFemale" name="goal" value="maintain">
+                <label for="maintainFemale">Maintain<img class="image" src="pics/ectomorphfemale.jpg" alt=""></label>
+                
+                <input type="radio" id="weightLossFemale" name="goal" value="weight loss">
+                <label for="weightLossFemale">Weight Loss<img src="pics/loosefemale.jpg" alt=""></label>
+                
+                <input type="radio" id="muscleGainFemale" name="goal" value="muscle gain">
+                <label for="muscleGainFemale">Muscle Gain<img src="pics/muscleFemale.jpg" alt=""> </label>
+            </div>
+
+            <label for="bodyTypeFemale">Body Type:</label>
+            <div class="radio-group" id="bodyTypeFemale">
+                <input type="radio" id="ectomorphFemale" name="body-type" value="ectomorph">
+                <label for="ectomorphFemale"><img src="pics/ectomorphfemale.jpg" alt="">Ectomorph</label>
+                
+                <input type="radio" id="endomorphFemale" name="body-type" value="endomorph">
+                <label for="endomorphFemale"><img src="pics/loosefemale.jpg" alt="">Endomorph</label>
+                
+                <input type="radio" id="mesomorphFemale" name="body-type" value="mesomorph">
+                <label for="mesomorphFemale"><img src="pics/mesomorphfemale.jpg" alt="">Mesomorph</label>
+            </div>
+
+            <button type="submit">Calculate</button>
+        </form>
+
+        <!-- Results Section -->
+        <div id="resultsFemale" class="results"></div>
+    </div>
+
+    <!-- Script linking the JavaScript code for females -->
+    <script src="plannerF.js"></script>
+        
+</body>
+</html>

@@ -1,0 +1,96 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 200vh;
+    background-color: #f4f4f9;
+    background-image: url(pics/PAGE\ -\ Copy.jpg);
+    background-size: cover; /* Ensures the image covers the entire screen */
+   background-attachment: fixed; /* Keeps the background in place while scrolling */
+   background-position: center; /* Centers the image */
+   background-repeat: no-repeat; /* Prevents repeating */
+   animation: bgZoom 10s infinite alternate ease-in-out;
+}
+
+.container {
+    width:1000px;
+    padding: 90px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(12px);
+    background-color: transparent;
+}
+
+h2 {
+    color: #333;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+input, select {
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+button {
+    padding: 10px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+.results {
+    margin-top: 20px;
+}
+
+.image {
+    width: 100px; /* Set the width to your desired size */
+    height: auto; /* Maintains aspect ratio */
+    display: inline-block;
+    margin: 30px; /* Adds some spacing around the images */
+}
+
+/* You can also specifically target the images inside your form if needed */
+.radio-group img {
+    width: 200px; /* Adjust the size here */
+    height: auto;
+    margin: 20px; /* Optional: Adds spacing */
+}
+
+.radio-group {
+    display: flex;
+    justify-content: space-around; /* Space out items evenly */
+    margin: 20px 0;
+}
+
+.radio-group div {
+    text-align: center; /* Centers the text below the image */
+    width: 200px; /* Set a fixed width to keep images aligned */
+}
+
+.radio-group img {
+    width: 150px; /* Adjust the size of the image */
+    height: auto;
+    display: block; /* Ensures the image behaves like a block element */
+    margin: 0 auto; /* Center the image within its container */
+}
+
+.radio-group label {
+    display: block;
+    margin-top: 5px; /* Space between image and text */
+}

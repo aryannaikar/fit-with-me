@@ -1,0 +1,55 @@
+body{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-image: url( "planner/pics/login.jpeg"); 
+    background-repeat: no-repeat;
+    background-position: center  ;
+    background-size: cover;
+}
+
+.table{
+    width: 420px;
+    background-color: transparent;
+    border: 2px solid rgba(225, 225,225,.2);
+    color: black;
+    height: 370px; 
+    border-radius: 30px;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 0 10px rgba(225, 225, 225, 0.147);
+    h1{
+        text-align: center;
+        font-size: 39px;
+        
+    }
+
+}
+
+ .input_box{
+    width: 100%;
+    height: 50px;
+    margin: 20px 0;
+}
+.input_box input{
+    width: 100%;
+    height: 100% ;
+    background: transparent;
+    
+    outline-color: rgb(229, 231, 233);
+    border: 2px solid rgba(225, 225,225,.2);
+    border-radius: 60px;
+    color: aliceblue;
+    
+}
+
+.input_box input::placeholder{
+    color: aliceblue;
+}
+
+.table .btn{
+    width: 100%;
+    height: 40px;
+    border-radius: 40px;
+}
+

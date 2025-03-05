@@ -1,0 +1,33 @@
+.male{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    gap: 150px;       
+    
+}
+
+
+body{
+    background-image: url( "pics/diet.jpeg");
+    background-repeat: no-repeat;
+    background-position: center  ;
+    background-size: cover;
+  
+}
+
+h1{
+    color: aqua;
+    display: flex;
+    justify-content: center;
+    
+    
+}
+    
+h1{
+   font-size: 60px;
+   color: red;
+    }
+
+
+  
