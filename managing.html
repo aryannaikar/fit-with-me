@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Diet Planner</title>
     <link rel="stylesheet" href="managing.css">
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
+    
 </head>
 <body>
 
@@ -37,7 +40,45 @@
        <h2 id="stepCount">Fetching steps...</h2>
 
 
-        <hr>
+       <h2>Identify Food Item</h2>
+
+       <h2>Identify Food Item</h2>
+
+        <!-- Webcam Capture Button -->
+        <button onclick="predictFoodFromWebcam()">Use Webcam</button>
+
+        <!-- Image Upload Input -->
+        <input type="file" id="imageUpload" accept="image/*" onchange="previewAndPredict(this.files[0])">
+
+        <!-- Webcam & Uploaded Image Preview -->
+        <div id="webcam-container"></div>
+        <img id="uploadedImage" style="max-width: 250px; margin-top: 10px; display: none; border: 2px solid #ddd; padding: 5px;">
+
+        <!-- Prediction Result -->
+        <div id="predictionResult" style="font-size: 18px; font-weight: bold; margin-top: 10px;"></div>
+
+        <!-- Output Field for Detailed Results -->
+        <h3>Food Details</h3>
+        <table id="outputTable" border="1" style="width: 100%; max-width: 400px; text-align: center; display: none;">
+            <tr>
+                <th>Food Item</th>
+                <td id="foodName">-</td>
+            </tr>
+            <tr>
+                <th>Calories</th>
+                <td id="foodCalories">-</td>
+            </tr>
+            <tr>
+                <th>Protein (g)</th>
+                <td id="foodProtein">-</td>
+            </tr>
+            <tr>
+                <th>Carbs (g)</th>
+                <td id="foodCarbs">-</td>
+            </tr>
+        </table>
+
+        
 
         <!-- Food Intake Section -->
         <h2>Food Intake Tracker</h2>
@@ -51,6 +92,7 @@
             <option value="6">Day 6</option>
             <option value="7">Day 7</option>
         </select>
+
 
 
 
@@ -186,10 +228,9 @@
 
         
 
-
-    <script src="managing.js"></script>
-    
-
-    
+       
+        <script src="managing.js"></script>  <!-- Your main script should be last -->
+        
 </body>
+
 </html>

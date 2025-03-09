@@ -1,0 +1,54 @@
+<div>Teachable Machine Image Model</div>
+<input type="file" id="imageUpload" accept="image/*" />
+<button type="button" onclick="init()">Load Model</button>
+<button type="button" onclick="predict()">Predict</button>
+<div id="label-container"></div>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
+<script type="text/javascript">
+    // The link to your model provided by Teachable Machine export panel
+    const URL = "https://teachablemachine.withgoogle.com/models/63hotzp_P/";
+
+    let model, maxPredictions;
+
+    // Load the image model
+    async function init() {
+        const modelURL = URL + "model.json";
+        const metadataURL = URL + "metadata.json";
+
+        // Load the model and metadata
+        model = await tmImage.load(modelURL, metadataURL);
+        maxPredictions = model.getTotalClasses();
+
+        // Append elements to the DOM
+        labelContainer = document.getElementById("label-container");
+        for (let i = 0; i < maxPredictions; i++) { // and class labels
+            labelContainer.appendChild(document.createElement("div"));
+        }
+
+        alert("Model loaded successfully!");
+    }
+
+    // Run the prediction on the uploaded image
+    async function predict() {
+        const imageUpload = document.getElementById('imageUpload');
+        if (imageUpload.files.length === 0) {
+            alert("Please upload an image first.");
+            return;
+        }
+
+        const file = imageUpload.files[0];
+        const img = new Image();
+        img.src = URL.createObjectURL(file);
+
+        img.onload = async function () {
+            // Predict can take in an image, video or canvas HTML element
+            const prediction = await model.predict(img);
+            for (let i = 0; i < maxPredictions; i++) {
+                const classPrediction =
+                    prediction[i].className + ": " + prediction[i].probability.toFixed(2);
+                labelContainer.childNodes[i].innerHTML = classPrediction;
+            }
+        };
+    }
+</script>

@@ -1,3 +1,132 @@
+const URL = "https://teachablemachine.withgoogle.com/models/FZNcfWVOm/"; // Replace with your model URL
+
+let model, labelContainer, maxPredictions;
+
+// Load the model
+async function loadModel() {
+    const modelURL = URL + "model.json";
+    const metadataURL = URL + "metadata.json";
+    
+    model = await tmImage.load(modelURL, metadataURL);
+    maxPredictions = model.getTotalClasses();
+    console.log("✅ Model loaded successfully!");
+}
+
+// Call loadModel when page loads
+window.onload = loadModel;
+
+async function previewAndPredict(file) {
+    const reader = new FileReader();
+    reader.onload = async function (event) {
+        const imageElement = document.getElementById("uploadedImage");
+        imageElement.src = event.target.result;
+        imageElement.style.display = "block";
+
+        // Perform prediction
+        await predictFoodFromImage(file);
+    };
+    reader.readAsDataURL(file);
+}
+
+// Nutrition Data
+const foodData = {
+    apple: { calories: 95, protein: 0.5, carbs: 25 },
+    banana: { calories: 105, protein: 1.3, carbs: 27 },
+    rice: { calories: 130, protein: 2, carbs: 28 },
+    chapati: { calories: 70, protein: 2.7, carbs: 15 },
+    chicken: { calories: 200, protein: 30, carbs: 0 },
+    milk: { calories: 42, protein: 3.4, carbs: 5 },
+    egg: { calories: 78, protein: 6, carbs: 1 },
+    watermelon: { calories: 30, protein: 0.6, carbs: 8 },
+    strawberry: { calories: 32, protein: 0.7, carbs: 7 }
+};
+
+// Function to update output table
+function updateOutputTable(foodItem) {
+    if (!foodData[foodItem]) {
+        document.getElementById("predictionResult").innerHTML = `⚠️ No nutrition data found for "${foodItem}".`;
+        return;
+    }
+
+    document.getElementById("foodName").textContent = foodItem;
+    document.getElementById("foodCalories").textContent = foodData[foodItem].calories;
+    document.getElementById("foodProtein").textContent = foodData[foodItem].protein;
+    document.getElementById("foodCarbs").textContent = foodData[foodItem].carbs;
+
+    document.getElementById("outputTable").style.display = "table";
+}
+
+async function predictFoodFromWebcam() {
+    const webcam = new tmImage.Webcam(200, 200, true); // width, height, flip
+    await webcam.setup();
+    await webcam.play();
+    
+    document.getElementById("webcam-container").appendChild(webcam.canvas);
+    
+    async function captureAndPredict() {
+        webcam.update();
+        const prediction = await model.predict(webcam.canvas);
+        
+        let highestPrediction = { className: "", probability: 0 };
+        prediction.forEach(pred => {
+            if (pred.probability > highestPrediction.probability) {
+                highestPrediction = pred;
+            }
+        });
+
+        updateDietPlan(highestPrediction.className);
+    }
+    
+    setInterval(captureAndPredict, 3000); // Predict every 3 seconds
+}
+
+// Function to predict from an uploaded image
+async function predictFoodFromImage(file) {
+    const reader = new FileReader();
+    
+    reader.onload = async function (event) {
+        const img = new Image();
+        img.src = event.target.result;
+        await img.decode();
+        
+        const prediction = await model.predict(img);
+        
+        let highestPrediction = { className: "", probability: 0 };
+        prediction.forEach(pred => {
+            if (pred.probability > highestPrediction.probability) {
+                highestPrediction = pred;
+            }
+        });
+
+        updateDietPlan(highestPrediction.className);
+    };
+    
+    reader.readAsDataURL(file);
+}
+
+// Function to update diet plan based on recognized food
+function updateDietPlan(foodItem) {
+    if (!foodData[foodItem]) {
+        alert(`⚠️ No nutrition data found for "${foodItem}".`);
+        return;
+    }
+
+    const mealType = document.getElementById("meal-type").value;
+    const { calories, protein, carbs } = foodData[foodItem];
+
+    mealTotals[mealType].calories += calories;
+    mealTotals[mealType].protein += protein;
+    mealTotals[mealType].carbs += carbs;
+
+    document.getElementById(`${mealType}-items`).innerHTML += `${foodItem}<br>`;
+    document.getElementById(`${mealType}-calories`).textContent = mealTotals[mealType].calories.toFixed(2);
+    document.getElementById(`${mealType}-protein`).textContent = mealTotals[mealType].protein.toFixed(2);
+    document.getElementById(`${mealType}-carbs`).textContent = mealTotals[mealType].carbs.toFixed(2);
+
+    alert(`✅ ${foodItem} added to ${mealType}!`);
+}
+
+
 let totalCalories = 0;
 let totalProtein = 0;
 let totalCarbs = 0;
@@ -192,5 +321,4 @@ document.getElementById("reset-diet-plan").addEventListener("click", () => {
 
     alert("✅ Diet plan has been reset!");
 });
-
 
