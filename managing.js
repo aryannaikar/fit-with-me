@@ -1,4 +1,4 @@
-const URL = "https://teachablemachine.withgoogle.com/models/FZNcfWVOm/"; // Replace with your model URL
+const URL = "https://teachablemachine.withgoogle.com/models/_PJm37bVB/"; // Replace with your model URL
 
 let model, labelContainer, maxPredictions;
 
@@ -38,7 +38,15 @@ const foodData = {
     milk: { calories: 42, protein: 3.4, carbs: 5 },
     egg: { calories: 78, protein: 6, carbs: 1 },
     watermelon: { calories: 30, protein: 0.6, carbs: 8 },
-    strawberry: { calories: 32, protein: 0.7, carbs: 7 }
+    strawberry: { calories: 32, protein: 0.7, carbs: 7 },
+    paneer: { calories: 265, protein: 18, carbs: 6 },
+    daal: { calories: 120, protein: 9, carbs: 20 },
+    fish: { calories: 206, protein: 22, carbs: 0 },
+    soyabean: { calories: 446, protein: 36, carbs: 30 },
+    curd: { calories: 98, protein: 11, carbs: 3.4 },
+    kidney_beans: { calories: 127, protein: 9, carbs: 22 },
+    leafy_vegetables: { calories: 25, protein: 2, carbs: 4 },
+    cheese: { calories: 402, protein: 25, carbs: 1.3 }
 };
 
 // Function to update output table
