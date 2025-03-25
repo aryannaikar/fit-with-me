@@ -6,12 +6,9 @@
     <title>Diet Planner</title>
     <link rel="stylesheet" href="managing.css">
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
-    
+    <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>  
 </head>
 <body>
-
-
 
     <div class="navbar">
         <a href="index.html" >Home</a>
@@ -19,18 +16,13 @@
         <a href="managing.html">Management</a>
         <a href="register.html">Logout</a>
     </div>
-    
-    
-    
+        
     <div class="container">
 
-         
- 
         <h1 class="head">Plan Your Diet</h1>
 
        <!-- Step Tracker Section -->
        <h2>Step Tracker</h2>
-       <!-- <button onclick="onGoogleSignIn()">Sign in with Google Fit</button> -->
 
        <label for="steps">Enter Steps:</label>
        <input type="number" id="steps" placeholder="Number of steps">
@@ -39,8 +31,6 @@
        <p>Calories burned: <span id="calories-burned">0</span> kcal</p>
        <h2 id="stepCount">Fetching steps...</h2>
 
-
-       <h2>Identify Food Item</h2>
 
        <h2>Identify Food Item</h2>
 
@@ -60,6 +50,7 @@
         <!-- Output Field for Detailed Results -->
         <h3>Food Details</h3>
         <table id="outputTable" border="1" style="width: 100%; max-width: 400px; text-align: center; display: none;">
+            
             <tr>
                 <th>Food Item</th>
                 <td id="foodName">-</td>
@@ -83,7 +74,7 @@
         <!-- Food Intake Section -->
         <h2>Food Intake Tracker</h2>
         <label for="day-select">Select Day:</label>
-        <select id="day-select">
+        <select id="day-select"  onchange="fetchAndDisplayMeals()">
             <option value="1">Day 1</option>
             <option value="2">Day 2</option>
             <option value="3">Day 3</option>
@@ -92,9 +83,6 @@
             <option value="6">Day 6</option>
             <option value="7">Day 7</option>
         </select>
-
-
-
 
         <form id="food-form">
             <label for="meal-type">Select Meal Type:</label>
@@ -106,9 +94,10 @@
             
             <label for="food-item">Select Food Item:</label>
             <select id="food-item" onchange="toggleQuantityInput()">
+
                 <option value="eggs" data-calories="78" data-protein="6" data-carbs="1">Eggs (78 cal, 6g protein, 1g carbs)</option>
                 <option value="oatmeal" data-calories="150" data-protein="5" data-carbs="27">Oatmeal (150 cal, 5g protein, 27g carbs)</option>
-                <option value="chicken" data-calories="200" data-protein="30" data-carbs="0">Grilled Chicken (200 cal, 30g protein, 0g carbs)</option>
+                <option value="chicken" data-calories="200" data-protein="30" data-carbs="0"> Chicken (200 cal, 30g protein, 0g carbs)</option>
                 <option value="salad" data-calories="100" data-protein="2" data-carbs="10">Salad (100 cal, 2g protein, 10g carbs)</option>
                 <option value="apple" data-calories="95" data-protein="0.5" data-carbs="25">Apple (95 cal, 0.5g protein, 25g carbs)</option>
                 <option value="rice" data-calories="130" data-protein="2" data-carbs="28">Rice (130 cal, 2g protein, 28g carbs)</option>
@@ -124,9 +113,9 @@
                 <option value="curd" data-calories="98" data-protein="4.5" data-carbs="4">Curd (98 cal, 4.5g protein, 4g carbs)</option>
                 <option value="dry-fruits" data-calories="600" data-protein="20" data-carbs="50">Dry Fruits (600 cal, 20g protein, 50g carbs)</option>
                 <option value="oats" data-calories="389" data-protein="17" data-carbs="66">Oats (389 cal, 17g protein, 66g carbs)</option>
-               
                 <option value="peanuts" data-calories="567" data-protein="25" data-carbs="16">Peanuts (567 cal, 25g protein, 16g carbs)</option>
                 <option value="banana" data-calories="105" data-protein="1.3" data-carbs="27">banana (105 cal, 1.3g protein, 27g carbs)</option>
+                
             </select><br><br>
 
             <!-- Quantity input for specific items -->
@@ -196,8 +185,6 @@
         </div>
     </div>
 
-   
-
 
     <h3>Weekly Summary</h3>
         <table>
@@ -228,7 +215,6 @@
 
         
 
-       
         <script src="managing.js"></script>  <!-- Your main script should be last -->
         
 </body>

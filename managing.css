@@ -28,12 +28,14 @@
 
 
 body {
-    background-image: url("planner/pics/PAGE - Copy.jpg");
+    /* background-image: url("planner/pics/PAGE - Copy.jpg"); */
+    background-image: url("planner/pics/bg.jpg");
     background-size: cover; /* Ensures the image covers the entire screen */
     background-attachment: fixed; /* Keeps the background in place while scrolling */
     background-position: center; /* Centers the image */
     background-repeat: no-repeat; /* Prevents repeating */
     animation: bgZoom 10s infinite alternate ease-in-out;
+    font-size: 19px;
  }
  
 
@@ -169,16 +171,6 @@ button:hover {
 /* Random floating movement */
 
 
-
-
-
-
-
-
-
-
-
-
 @keyframes floatRandom {
     0% {
         transform: translate(0, 0) rotate(0deg);
@@ -210,5 +202,56 @@ button:hover {
     background-color: #ff2b2b;
     transform: scale(1.05);
 }
+/* hereeeeeeeeeeeeeeeeeeee */
+
+@media (max-width: 768px) {
+    .container {
+        max-width: 100%;
+        padding: 10px;
+    }
+
+    table {
+        font-size: 14px;
+    }
+
+    th, td {
+        padding: 8px;
+    }
+
+    .navbar a {
+        display: block;
+        text-align: left;
+        padding: 10px;
+        font-size: 16px;
+    }
+
+    .navbar {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    button {
+        font-size: 14px;
+        padding: 8px 15px;
+    }
+}
 
 
+.table-container {
+    overflow-x: auto;
+    width: 100%;
+}
+
+@media (max-width: 800px) {
+    .navbar {
+        flex-direction: column;
+    }
+
+    .navbar a {
+        display: block;
+        width: 100%;
+        text-align: center;
+        padding: 10px;
+    }
+}

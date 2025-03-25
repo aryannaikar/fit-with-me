@@ -1,45 +1,48 @@
-// Function to handle registration
 document.addEventListener("DOMContentLoaded", function() {
     const registerForm = document.querySelector("form");
     const loginForm = document.querySelector("#loginForm");
 
-    // Handle registration
+    // Handle Registration
     if (registerForm && !loginForm) {
-        registerForm.addEventListener("submit", function(event) {
-            event.preventDefault(); // Prevent form from refreshing the page
+        registerForm.addEventListener("submit", async function(event) {
+            event.preventDefault();
 
-            // Get username and password input from registration form
             const username = registerForm.querySelector('input[type="text"]').value;
             const password = registerForm.querySelector('input[type="password"]').value;
 
-            // Store them in localStorage (or sessionStorage if you prefer)
-            localStorage.setItem('registeredUsername', username);
-            localStorage.setItem('registeredPassword', password);
+            const response = await fetch("http://localhost:3000/register", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ username, password })
+            });
 
-            alert("Registration successful! You can now login.");
+            const data = await response.json();
+            alert(data.message);
         });
     }
 
-    // Handle login
+    // Handle Login
     if (loginForm) {
-        loginForm.addEventListener("submit", function(event) {
-            event.preventDefault(); // Prevent form from refreshing the page
+        loginForm.addEventListener("submit", async function(event) {
+            event.preventDefault();
 
-            // Get input from login form
             const username = loginForm.querySelector('#loginUsername').value;
             const password = loginForm.querySelector('#loginPassword').value;
 
-            // Get the registered credentials from localStorage
-            const registeredUsername = localStorage.getItem('registeredUsername');
-            const registeredPassword = localStorage.getItem('registeredPassword');
+            const response = await fetch("http://localhost:3000/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ username, password })
+            });
 
-            // Check if login credentials match the registered ones
-            if (username === registeredUsername && password === registeredPassword) {
-                // Redirect to PageGender.html if credentials match
-                window.location.href = "index.html";
+            const data = await response.json();
+
+            if (data.success) {
+                localStorage.setItem("token", data.token);
+                localStorage.setItem("username", username);
+                window.location.href = "managing.html"; // Redirect to management page
             } else {
-                // Display an alert if the username or password is incorrect
-                alert("Invalid username or password. Please try again.");
+                alert("Invalid username or password.");
             }
         });
     }

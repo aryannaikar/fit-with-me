@@ -1,4 +1,4 @@
-const URL = "https://teachablemachine.withgoogle.com/models/FZNcfWVOm/"; // Replace with your model URL
+const URL = "https://teachablemachine.withgoogle.com/models/_PJm37bVB/"; // Replace with your model URL
 
 let model, labelContainer, maxPredictions;
 
@@ -9,7 +9,7 @@ async function loadModel() {
     
     model = await tmImage.load(modelURL, metadataURL);
     maxPredictions = model.getTotalClasses();
-    console.log("✅ Model loaded successfully!");
+    console.log("? Model loaded successfully!");
 }
 
 // Call loadModel when page loads
@@ -38,13 +38,21 @@ const foodData = {
     milk: { calories: 42, protein: 3.4, carbs: 5 },
     egg: { calories: 78, protein: 6, carbs: 1 },
     watermelon: { calories: 30, protein: 0.6, carbs: 8 },
-    strawberry: { calories: 32, protein: 0.7, carbs: 7 }
+    strawberry: { calories: 32, protein: 0.7, carbs: 7 },
+    paneer: { calories: 265, protein: 18, carbs: 6 },
+    daal: { calories: 120, protein: 9, carbs: 20 },
+    fish: { calories: 206, protein: 22, carbs: 0 },
+    soyabean: { calories: 446, protein: 36, carbs: 30 },
+    curd: { calories: 98, protein: 11, carbs: 3.4 },
+    kidney_beans: { calories: 127, protein: 9, carbs: 22 },
+    leafy_vegetables: { calories: 25, protein: 2, carbs: 4 },
+    cheese: { calories: 402, protein: 25, carbs: 1.3 }
 };
 
 // Function to update output table
 function updateOutputTable(foodItem) {
     if (!foodData[foodItem]) {
-        document.getElementById("predictionResult").innerHTML = `⚠️ No nutrition data found for "${foodItem}".`;
+        document.getElementById("predictionResult").innerHTML = `?? No nutrition data found for "${foodItem}".`;
         return;
     }
 
@@ -107,7 +115,7 @@ async function predictFoodFromImage(file) {
 // Function to update diet plan based on recognized food
 function updateDietPlan(foodItem) {
     if (!foodData[foodItem]) {
-        alert(`⚠️ No nutrition data found for "${foodItem}".`);
+        alert(`?? No nutrition data found for "${foodItem}".`);
         return;
     }
 
@@ -123,7 +131,7 @@ function updateDietPlan(foodItem) {
     document.getElementById(`${mealType}-protein`).textContent = mealTotals[mealType].protein.toFixed(2);
     document.getElementById(`${mealType}-carbs`).textContent = mealTotals[mealType].carbs.toFixed(2);
 
-    alert(`✅ ${foodItem} added to ${mealType}!`);
+    alert(`? ${foodItem} added to ${mealType}!`);
 }
 
 
@@ -251,31 +259,43 @@ document.getElementById('calculate-steps').addEventListener('click', function ()
 });
 
 // Function to update the weekly summary table
-function updateWeeklySummary() {
-    const weekSummaryBody = document.getElementById('weekly-summary-body');
-    weekSummaryBody.innerHTML = ''; // Clear previous entries
+async function updateWeeklySummary() {
+    const weekSummaryBody = document.getElementById("weekly-summary-body");
+    weekSummaryBody.innerHTML = ""; // Clear existing data
 
-    // Loop through each day and add to the summary table
     for (let day = 1; day <= 7; day++) {
-        const row = document.createElement('tr');
+        try {
+            const response = await fetch(`http://localhost:3000/meals?day=${day}`);
+            const data = await response.json();
 
-        const dayCell = document.createElement('td');
-        dayCell.textContent = `Day ${day}`;
-        row.appendChild(dayCell);
+            let dayCalories = 0, dayProtein = 0, dayCarbs = 0;
 
-        const caloriesConsumed = weeklySummary[day].calories;
-        const caloriesBurned = weeklySummary[day].caloriesBurned;
-        const netCalories = caloriesConsumed - caloriesBurned;
-        const protein = weeklySummary[day].protein;
-        const carbs = weeklySummary[day].carbs;
+            if (data.meals) {
+                Object.keys(data.meals).forEach(mealType => {
+                    data.meals[mealType].forEach(meal => {
+                        dayCalories += meal.calories;
+                        dayProtein += meal.protein;
+                        dayCarbs += meal.carbs;
+                    });
+                });
+            }
 
-        row.innerHTML += `<td>${caloriesConsumed.toFixed(2)}</td>`;
-        row.innerHTML += `<td>${caloriesBurned.toFixed(2)}</td>`;
-        row.innerHTML += `<td>${netCalories.toFixed(2)}</td>`;
-        row.innerHTML += `<td>${protein.toFixed(2)}</td>`;
-        row.innerHTML += `<td>${carbs.toFixed(2)}</td>`;
+            // ? Create a new row in the weekly summary table
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td>Day ${day}</td>
+                <td>${dayCalories.toFixed(2)}</td>
+                <td>0</td>  <!-- Placeholder for burned calories -->
+                <td>${(dayCalories - 0).toFixed(2)}</td>
+                <td>${dayProtein.toFixed(2)}</td>
+                <td>${dayCarbs.toFixed(2)}</td>
+            `;
 
-        weekSummaryBody.appendChild(row);
+            weekSummaryBody.appendChild(row);
+
+        } catch (error) {
+            console.error(`? Error fetching data for Day ${day}:`, error);
+        }
     }
 }
 
@@ -304,21 +324,173 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
-document.getElementById("reset-diet-plan").addEventListener("click", () => {
-    const mealTypes = ["breakfast", "lunch", "dinner"];
 
-    mealTypes.forEach(meal => {
-        document.getElementById(`${meal}-items`).innerHTML = "";           // Clear food items
-        document.getElementById(`${meal}-calories`).textContent = "0";     // Reset calories
-        document.getElementById(`${meal}-protein`).textContent = "0";      // Reset protein
-        document.getElementById(`${meal}-carbs`).textContent = "0";        // Reset carbs
-    });
 
-    // Reset total values
-    document.getElementById("total-calories").textContent = "0";
-    document.getElementById("total-protein").textContent = "0";
-    document.getElementById("total-carbs").textContent = "0";
 
-    alert("✅ Diet plan has been reset!");
+document.getElementById("reset-diet-plan").addEventListener("click", async () => {
+    const day = parseInt(document.getElementById("day-select").value);
+
+    if (!day || day < 1 || day > 7) {
+        alert("? Please select a valid day before resetting.");
+        return;
+    }
+
+    const confirmReset = confirm(`?? Are you sure you want to reset Day ${day}'s diet plan?`);
+    if (!confirmReset) return;
+
+    try {
+        // ? API call to delete meals for the selected day
+        const response = await fetch(`http://localhost:3000/resetMeals?day=${day}`, {
+            method: "DELETE"
+        });
+
+        const result = await response.text();
+        alert(result);
+
+        // ? Clear the table after deleting meals
+        document.getElementById("breakfast-items").innerHTML = "";
+        document.getElementById("lunch-items").innerHTML = "";
+        document.getElementById("dinner-items").innerHTML = "";
+
+        document.getElementById("breakfast-calories").textContent = "0";
+        document.getElementById("lunch-calories").textContent = "0";
+        document.getElementById("dinner-calories").textContent = "0";
+
+        document.getElementById("breakfast-protein").textContent = "0";
+        document.getElementById("lunch-protein").textContent = "0";
+        document.getElementById("dinner-protein").textContent = "0";
+
+        document.getElementById("breakfast-carbs").textContent = "0";
+        document.getElementById("lunch-carbs").textContent = "0";
+        document.getElementById("dinner-carbs").textContent = "0";
+
+        // ? Reset total values
+        document.getElementById("total-calories").textContent = "0";
+        document.getElementById("total-protein").textContent = "0";
+        document.getElementById("total-carbs").textContent = "0";
+
+        // ? Refresh weekly summary after reset
+        updateWeeklySummary();
+
+    } catch (error) {
+        console.error("? Error resetting diet plan:", error);
+    }
 });
 
+
+
+
+
+
+
+
+
+
+
+
+async function fetchMeals(day) {
+    try {
+        const response = await fetch(`http://localhost:3000/meals?day=${day}`);
+        const data = await response.json();
+        console.log("Meals for Day", day, ":", data);
+        return data;
+    } catch (error) {
+        console.error("? Error fetching meals:", error);
+    }
+}
+
+
+
+async function addFoodItem() {
+    const day = document.getElementById('day-select').value;
+    const mealType = document.getElementById('meal-type').value;
+    const foodItemSelect = document.getElementById('food-item');
+    const foodName = foodItemSelect.options[foodItemSelect.selectedIndex].text;
+    const calories = parseFloat(foodItemSelect.options[foodItemSelect.selectedIndex].dataset.calories);
+    const protein = parseFloat(foodItemSelect.options[foodItemSelect.selectedIndex].dataset.protein);
+    const carbs = parseFloat(foodItemSelect.options[foodItemSelect.selectedIndex].dataset.carbs);
+
+
+    const token = localStorage.getItem("token");
+    if (!token) {
+        alert("? Please log in first!");
+        return;
+    }
+
+
+    const mealData = { day: parseInt(day), mealType, foodName, calories, protein, carbs };
+
+    try {
+        const response = await fetch("http://localhost:3000/addMeal", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(mealData)
+        });
+
+        const result = await response.json();
+        alert(result.message);
+
+        // ? Fetch & display updated meals
+        fetchAndDisplayMeals();
+        updateWeeklySummary();  // Refresh weekly summary
+
+    } catch (error) {
+        console.error("? Error adding meal:", error);
+    }
+
+}
+
+
+
+
+async function fetchAndDisplayMeals() {
+    const day = document.getElementById("day-select").value;
+
+    try {
+        const response = await fetch(`http://localhost:3000/meals?day=${day}`);
+        const data = await response.json();
+
+        if (!data.meals) {
+            console.warn("?? No meals found for the selected day.");
+            return;
+        }
+
+        // ? Clear previous meal data
+        document.getElementById("breakfast-items").innerHTML = "";
+        document.getElementById("lunch-items").innerHTML = "";
+        document.getElementById("dinner-items").innerHTML = "";
+
+        let totalCalories = 0;
+        let totalProtein = 0;
+        let totalCarbs = 0;
+
+        // ? Populate the table with meal data and calculate totals
+        Object.keys(data.meals).forEach(mealType => {
+            data.meals[mealType].forEach(meal => {
+                document.getElementById(`${mealType}-items`).innerHTML += `${meal.foodName}<br>`;
+                totalCalories += meal.calories;
+                totalProtein += meal.protein;
+                totalCarbs += meal.carbs;
+            });
+        });
+
+        // ? Update totals in the table
+        document.getElementById("total-calories").textContent = totalCalories.toFixed(2);
+        document.getElementById("total-protein").textContent = totalProtein.toFixed(2);
+        document.getElementById("total-carbs").textContent = totalCarbs.toFixed(2);
+
+        // ? Update weekly summary data
+        updateWeeklySummary();
+
+    } catch (error) {
+        console.error("? Error fetching meals:", error);
+    }
+}
+
+
+
+
+
+document.addEventListener("DOMContentLoaded", () => {
+    fetchAndDisplayMeals(); // Load meals when the page loads
+});

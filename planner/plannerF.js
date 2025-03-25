@@ -4,140 +4,142 @@ document.getElementById("dietFormFemale").addEventListener("submit", function (e
     const height = parseFloat(document.getElementById("heightFemale").value);
     const age = parseInt(document.getElementById("ageFemale").value);
     const weight = parseFloat(document.getElementById("weightFemale").value);
-    const goal = document.querySelector('input[name="goal"]:checked').value; // Get selected goal
-    const bodyType = document.querySelector('input[name="body-type"]:checked').value; // Get selected body type
-    const dietType = document.querySelector('input[name="diet-type"]:checked') ? document.querySelector('input[name="diet-type"]:checked').value : "none"; // Get selected diet type (vegetarian)
+    const pulseRate = parseInt(document.getElementById("pulseRate").value);
+    const goal = document.querySelector('input[name="goal"]:checked')?.value || "maintain"; 
+    const bodyType = document.querySelector('input[name="body-type"]:checked')?.value || "mesomorph"; 
+    const dietType = document.querySelector('input[name="diet-type"]:checked')?.value || "none";
+
+    if (isNaN(height) || isNaN(age) || isNaN(weight) || isNaN(pulseRate)) {
+        alert("Please enter valid values for height, weight, age, and pulse rate.");
+        return;
+    }
 
     const bmi = calculateBMIFemale(weight, height);
     const bmr = calculateBMRFemale(weight, height, age);
     const caloricNeeds = adjustCaloriesForGoal(bmr, goal);
     const bgi = calculateBGI(bodyType);
-
-    const dietPlan = generateDietPlan(bgi, caloricNeeds, goal, dietType);
+    const dietPlan = generateDietPlan(bgi, caloricNeeds, goal, dietType, pulseRate);
     
-    displayResults(dietPlan, caloricNeeds, bgi, bmi, bmr, weight, goal, dietType); // Pass dietType to displayResults
+    displayResults(dietPlan, caloricNeeds, bgi, bmi, bmr, weight, goal, dietType, pulseRate);
 });
 
 function calculateBMIFemale(weight, height) {
-    const heightInMeters = height * 0.0254; // Convert height from inches to meters
-    const weightInKg = weight * 0.453592; // Convert weight from lbs to kg
+    const heightInMeters = height * 0.0254;
+    const weightInKg = weight * 0.453592;
     return (weightInKg / (heightInMeters * heightInMeters)).toFixed(2);
 }
 
 function calculateBMRFemale(weight, height, age) {
-    return 655 + (4.35 * weight) + (4.7 * height) - (4.7 * age);
+    const weightInKg = weight * 0.453592;
+    const heightInCm = height * 2.54;
+    return (655 + (9.6 * weightInKg) + (1.8 * heightInCm) - (4.7 * age)).toFixed(2);
 }
 
 function adjustCaloriesForGoal(bmr, selectedOption) {
-    if (selectedOption === "weight loss") {
-        return bmr - 500;
-    } else if (selectedOption === "muscle gain") {
-        return bmr + 500;
-    } else {
-        return bmr;
-    }
+    if (selectedOption === "weight loss") return bmr - 500;
+    if (selectedOption === "muscle gain") return bmr + 500;
+    return bmr;
 }
 
 function calculateBGI(selectedBodyType) {
-    if (selectedBodyType === "ectomorph") {
-        return 50;
-    } else if (selectedBodyType === "mesomorph") {
-        return 60;
-    } else {
-        return 70;
-    }
+    return selectedBodyType === "ectomorph" ? 50 : selectedBodyType === "mesomorph" ? 60 : 70;
 }
 
-function generateDietPlan(bgi, caloricIntake, goal, dietType) {
+function generateDietPlan(bgi, caloricIntake, goal, dietType, pulseRate) {
     const foodItems = {
-        eggs: { calories: 155, protein: 13, carbs: 1, bgi: 0, vegetarian: false },
-        oatmeal: { calories: 150, protein: 5, carbs: 27, bgi: 55, vegetarian: true },
-        chicken: { calories: 165, protein: 31, carbs: 0, bgi: 0, vegetarian: false },
-        salad: { calories: 33, protein: 2, carbs: 7, bgi: 10, vegetarian: true },
-        apple: { calories: 95, protein: 0.5, carbs: 25, bgi: 38, vegetarian: true },
-        rice: { calories: 130, protein: 2.7, carbs: 28, bgi: 73, vegetarian: true },
-        fish: { calories: 206, protein: 22, carbs: 0, bgi: 0, vegetarian: false }, // Example: salmon
-        chapati: { calories: 120, protein: 3, carbs: 24, bgi: 50, vegetarian: true }, // Whole wheat
-        kidneyBeans: { calories: 225, protein: 15, carbs: 40, bgi: 60, vegetarian: true }, // Cooked
-        paneer: { calories: 296, protein: 25, carbs: 4, bgi: 15, vegetarian: true }, // Indian cottage cheese
-        tofu: { calories: 80, protein: 8, carbs: 3, bgi: 15, vegetarian: true }, // Tofu
-        lentils: { calories: 230, protein: 18, carbs: 40, bgi: 30, vegetarian: true }, // Cooked lentils
-        quinoa: { calories: 222, protein: 8, carbs: 39, bgi: 53, vegetarian: true }, // Cooked quinoa
-        chickpeas: { calories: 269, protein: 15, carbs: 45, bgi: 10, vegetarian: true } // Cooked chickpeas
+        chicken: { calories: 165, protein: 31, carbs: 0, bgi: 0, vegetarian: false, suitableFor: "tachycardia" },
+        salad: { calories: 33, protein: 2, carbs: 7, bgi: 10, vegetarian: true, suitableFor: "tachycardia" },
+        apple: { calories: 95, protein: 0.5, carbs: 25, bgi: 38, vegetarian: true, suitableFor: "bradycardia" },
+        rice: { calories: 130, protein: 2.7, carbs: 28, bgi: 73, vegetarian: true, suitableFor: "all" },
+        fish: { calories: 206, protein: 22, carbs: 0, bgi: 0, vegetarian: false, suitableFor: "tachycardia" },
+        chapati: { calories: 120, protein: 3, carbs: 24, bgi: 50, vegetarian: true, suitableFor: "all" },
+        walnuts: { calories: 185, protein: 4, carbs: 4, bgi: 10, vegetarian: true, suitableFor: "tachycardia" },
+        lentils: { calories: 230, protein: 18, carbs: 40, bgi: 30, vegetarian: true, suitableFor: "bradycardia" },
+        eggs: { calories: 155, protein: 13, carbs: 1, bgi: 0, vegetarian: false, suitableFor: "all" },
+        oatmeal: { calories: 150, protein: 5, carbs: 27, bgi: 55, vegetarian: true, suitableFor: "bradycardia" },
+        kidneyBeans: { calories: 225, protein: 15, carbs: 40, bgi: 60, vegetarian: true, suitableFor: "bradycardia" },
+        paneer: { calories: 296, protein: 25, carbs: 4, bgi: 15, vegetarian: true, suitableFor: "bradycardia" },
+        tofu: { calories: 80, protein: 8, carbs: 3, bgi: 15, vegetarian: true, suitableFor: "bradycardia" },
+        // lentils: { calories: 230, protein: 18, carbs: 40, bgi: 30, vegetarian: true, suitableFor: "bradycardia" },
+        // quinoa: { calories: 222, protein: 8, carbs: 39, bgi: 53, vegetarian: true, suitableFor: "all" },
+        chickpeas: { calories: 269, protein: 15, carbs: 45, bgi: 10, vegetarian: true, suitableFor: "bradycardia" }
     };
 
-    // Filter vegetarian food only if vegetarian option is selected
-    const availableFoodItems = (dietType === "vegetarian") ?
-        Object.fromEntries(
-            Object.entries(foodItems).filter(([food, details]) => details.vegetarian)
-        ) : foodItems;
+    let availableFoodItems = (dietType === "vegetarian")
+        ? Object.fromEntries(Object.entries(foodItems).filter(([_, details]) => details.vegetarian))
+        : foodItems;
 
-    const meals = ["breakfast", "lunch", "dinner"];
-    const totalCalories = caloricIntake;
-    const mealCalories = [totalCalories * 0.3, totalCalories * 0.4, totalCalories * 0.3];
+    availableFoodItems = filterFoodByPulseRate(pulseRate, availableFoodItems);
 
-    return meals.map((meal, index) => chooseFoodsForMeal(mealCalories[index], bgi, availableFoodItems));
+    return ["breakfast", "lunch", "dinner"].map(meal => 
+        chooseFoodsForMeal(caloricIntake / 3, bgi, availableFoodItems)
+    );
 }
 
 function chooseFoodsForMeal(calorieTarget, targetBGI, foodItems) {
     let mealPlan = [];
     let remainingCalories = calorieTarget;
     let totalBGI = 0;
-    const foodNames = Object.keys(foodItems);
-
-    const shuffledFoodNames = foodNames.sort(() => 0.5 - Math.random());
+    
+    const shuffledFoodNames = Object.keys(foodItems).sort(() => Math.random() - 0.5);
 
     for (const foodName of shuffledFoodNames) {
         const foodInfo = foodItems[foodName];
 
         if (foodInfo.calories <= remainingCalories && totalBGI + foodInfo.bgi <= targetBGI) {
-            const portionSize = Math.min(remainingCalories / foodInfo.calories, 1);
-            mealPlan.push({
-                food: foodName,
-                quantity: `${(portionSize * 100).toFixed(0)}g`,
-                calories: (foodInfo.calories * portionSize).toFixed(2),
-                bgi: (foodInfo.bgi * portionSize).toFixed(2),
-            });
-            remainingCalories -= foodInfo.calories * portionSize;
-            totalBGI += foodInfo.bgi * portionSize;
+            mealPlan.push({ food: foodName, quantity: `100g`, calories: foodInfo.calories, bgi: foodInfo.bgi });
+            remainingCalories -= foodInfo.calories;
+            totalBGI += foodInfo.bgi;
         }
 
-        if (remainingCalories <= 0 || totalBGI >= targetBGI) {
-            break;
-        }
+        if (remainingCalories <= 0 || totalBGI >= targetBGI) break;
     }
 
     return mealPlan;
 }
 
-function displayResults(dietPlan, caloricNeeds, bgi, bmi, bmr, weight, goal, dietType) {
+function filterFoodByPulseRate(pulseRate, foodItems) {
+    return Object.fromEntries(Object.entries(foodItems).filter(([_, details]) =>
+        details.suitableFor === (pulseRate > 100 ? "tachycardia" : pulseRate < 60 ? "bradycardia" : "all") || details.suitableFor === "all"));
+}
+
+function displayResults(dietPlan, caloricNeeds, bgi, bmi, bmr, weight, goal, dietType, pulseRate) {
     const resultsDiv = document.getElementById("resultsFemale");
-    
-    let bmiCategory = "";
-    if (bmi < 18.5) {
-        bmiCategory = "Underweight";
-    } else if (bmi >= 18.5 && bmi <= 24.9) {
-        bmiCategory = "Normal weight";
-    } else if (bmi >= 25 && bmi <= 29.9) {
-        bmiCategory = "Overweight";
+    resultsDiv.innerHTML = `<h2>Your Results:</h2>
+        <p><strong>BMI:</strong> ${bmi}</p>
+        <p><strong>BMR:</strong> ${bmr} kcal/day</p>
+        <p><strong>Caloric Needs:</strong> ${caloricNeeds} kcal/day</p>
+        <p><strong>BGI:</strong> ${bgi}</p>
+        <p><strong>Goal:</strong> ${goal}</p>
+        <p><strong>Diet Type:</strong> ${dietType}</p>
+        <p><strong>Pulse Rate:</strong> ${pulseRate} BPM</p>`;
+
+    let pulseMessage = "";
+    if (pulseRate > 100) {
+        pulseMessage = `<h3 style="color: red;">High Pulse Rate Detected (Tachycardia). Consider:</h3>
+        <ul>
+            <li>Increase hydration: Water, herbal teas</li>
+            <li>Reduce sodium: Avoid processed foods</li>
+            <li>Eat potassium-rich foods: Bananas, oranges, spinach</li>
+            <li>Limit caffeine & sugar: Reduce coffee, energy drinks</li>
+        </ul>`;
+    } else if (pulseRate < 60) {
+        pulseMessage = `<h3 style="color: blue;">Low Pulse Rate Detected (Bradycardia). Consider:</h3>
+        <ul>
+            <li>Increase iron intake: Lean meats, spinach</li>
+            <li>Consume iodine-rich foods: Seaweed, dairy</li>
+        </ul>`;
     } else {
-        bmiCategory = "Obese";
+        pulseMessage = `<h3 style="color: green;">Normal Pulse Rate Detected.</h3>`;
     }
 
-    resultsDiv.innerHTML = `<h2>Your BMR: ${bmr.toFixed(2)} calories/day</h2>
-                            <h2>Your BMI: ${bmi} (${bmiCategory})</h2>
-                            <h2>Your Daily Caloric Needs: ${caloricNeeds.toFixed(2)} calories</h2>
-                            <h2>Your Target BGI: ${bgi}</h2>`;
+    resultsDiv.innerHTML += pulseMessage;
 
-    ["breakfast", "lunch", "dinner"].forEach((meal, index) => {
-        const mealPlan = dietPlan[index];
-        let mealHTML = `<h3>${meal.charAt(0).toUpperCase() + meal.slice(1)}:</h3><ul>`;
-        
-        mealPlan.forEach(food => {
-            mealHTML += `<li>${food.quantity} of ${food.food} - ${food.calories} calories, BGI: ${food.bgi}</li>`;
+    dietPlan.forEach((meal, index) => {
+        resultsDiv.innerHTML += `<h3>${["Breakfast", "Lunch", "Dinner"][index]}</h3><ul>`;
+        meal.forEach(food => {
+            resultsDiv.innerHTML += `<li>${food.quantity} of ${food.food} - ${food.calories} calories, BGI: ${food.bgi}</li>`;
         });
-
-        mealHTML += "</ul>";
-        resultsDiv.innerHTML += mealHTML;
+        resultsDiv.innerHTML += `</ul>`;
     });
 }

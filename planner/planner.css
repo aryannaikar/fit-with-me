@@ -7,7 +7,7 @@ body {
     align-items: center;
     height: 200vh;
     background-color: #f4f4f9;
-    background-image: url(pics/PAGE\ -\ Copy.jpg);
+    background-image: url(pics/bg.jpg);
     background-size: cover; /* Ensures the image covers the entire screen */
    background-attachment: fixed; /* Keeps the background in place while scrolling */
    background-position: center; /* Centers the image */
